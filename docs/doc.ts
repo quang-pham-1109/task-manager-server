@@ -2,6 +2,11 @@ import { AuthLoginJson } from './auth/auth-login';
 import { AuthRegisterJson } from './auth/auth-register';
 import { BoardCreateJson, BoardGetJson, BoardGetsJson } from './board';
 import { CardGetsListJson, CardCreateJson, CardGetJson } from './card';
+import {
+  CheckListCreateJson,
+  CheckListGetsCard,
+  CheckListUpdateStatusJson,
+} from './checklist';
 import { CommentCreateJson, CommentGetCardJson } from './comment';
 import {
   ListCreateJson,
@@ -11,6 +16,11 @@ import {
 
 export const apiDoc = {
   openapi: '3.0.0',
+  info: {
+    title: 'Task Management API',
+    description: 'API for Task Management Application',
+    version: '1.0.0',
+  },
   servers: [
     {
       url: 'http://localhost:3001/',
@@ -62,6 +72,16 @@ export const apiDoc = {
       get: CardGetsListJson,
     },
 
+    // CheckList
+    '/checklist': {
+      post: CheckListCreateJson,
+    },
+    '/checklist/{checkListId}/status': {
+      put: CheckListUpdateStatusJson,
+    },
+    '/checklist/{cardId}/card': {
+      get: CheckListGetsCard,
+    },
     // Comment
     '/comment': {
       post: CommentCreateJson,

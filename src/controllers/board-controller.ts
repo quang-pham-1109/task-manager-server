@@ -1,6 +1,11 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { createBoard, getBoardsByUserId, getBoardById } from '../services';
+import {
+  createBoard,
+  getBoardsByUserId,
+  getBoardById,
+  findUserById,
+} from '../services';
 import { getUserIdFromToken } from '../middleware';
 
 export const createBoardHandler = async (req: Request, res: Response) => {
@@ -12,6 +17,13 @@ export const createBoardHandler = async (req: Request, res: Response) => {
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: 'Invalid input' });
+    }
+
+    const user = await findUserById(userId);
+    if (!user) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: 'User not found' });
     }
 
     const board = await createBoard(Title, userId);
@@ -29,8 +41,15 @@ export const createBoardHandler = async (req: Request, res: Response) => {
 export const getBoardsHandler = async (req: Request, res: Response) => {
   try {
     const userId = getUserIdFromToken(req);
-    const boards = await getBoardsByUserId(userId);
 
+    const user = await findUserById(userId);
+    if (!user) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: 'User not found' });
+    }
+
+    const boards = await getBoardsByUserId(userId);
     if (!boards) {
       return res
         .status(StatusCodes.NOT_FOUND)

@@ -18,19 +18,10 @@ export const createCardHandler = async (req: Request, res: Response) => {
         .json({ message: 'List not found' });
     }
 
-    // Create card
-    const card = await createCard(
-      Title,
-      DueDate,
-      ReminderDate,
-      Description,
-      ListId,
-    );
-    if (card) {
-      return res
-        .status(StatusCodes.CREATED)
-        .json({ message: 'Created Successfully' });
-    }
+    await createCard(Title, DueDate, ReminderDate, Description, ListId);
+    return res
+      .status(StatusCodes.CREATED)
+      .json({ message: 'Created Successfully' });
   } catch (error) {
     console.log(error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
@@ -44,10 +35,21 @@ export const getCardsByListIdHandler = async (
   try {
     const { listId } = req.params;
 
-    const cards = await getCardsByListId(parseInt(listId));
-    if (cards) {
-      return res.status(StatusCodes.OK).json(cards);
+    const list = await getListById(parseInt(listId));
+    if (!list) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: 'List not found' });
     }
+
+    const cards = await getCardsByListId(parseInt(listId));
+    if (!cards) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: 'Not found' });
+    }
+
+    return res.status(StatusCodes.OK).json(cards);
   } catch (error) {
     console.log(error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);

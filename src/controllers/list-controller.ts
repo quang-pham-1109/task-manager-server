@@ -50,11 +50,18 @@ export const getListsByBoardIdHandler = async (
   try {
     const boardId: number = parseInt(req.params.boardId);
 
+    const board = await getBoardById(boardId);
+    if (!board) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: 'Board not found' });
+    }
+
     const lists = await getListsByBoardId(boardId);
     if (!lists) {
       return res
         .status(StatusCodes.NOT_FOUND)
-        .json({ message: 'Not found' });
+        .json({ message: 'List Not found' });
     }
 
     return res.status(StatusCodes.OK).json(lists);

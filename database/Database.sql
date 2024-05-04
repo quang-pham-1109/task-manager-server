@@ -1,5 +1,6 @@
 CREATE TABLE Users (
-  UserId SERIAL PRIMARY KEY,
+  UserId INT PRIMARY KEY,
+  Username TEXT,
   FirstName TEXT,
   LastName TEXT,
   Email TEXT UNIQUE,
@@ -7,7 +8,7 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE Boards (
-  BoardId SERIAL PRIMARY KEY,
+  BoardId INT PRIMARY KEY,
   CreatedAt TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
   Title TEXT,
   UpdatedAt TIMESTAMP(6)
@@ -22,7 +23,7 @@ CREATE TABLE BoardMembers (
 );
 
 CREATE TABLE Lists (
-  ListId SERIAL PRIMARY KEY,
+  ListId INT PRIMARY KEY,
   CreatedAt TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
   UpdatedAt TIMESTAMP(6),
   Title TEXT,
@@ -38,7 +39,7 @@ CREATE TABLE BoardLists (
 );
 
 CREATE TABLE Cards (
-  CardId SERIAL PRIMARY KEY,
+  CardId INT PRIMARY KEY,
   Title TEXT,
   DueDate DATE,
   Description TEXT,
@@ -46,7 +47,7 @@ CREATE TABLE Cards (
 );
 
 CREATE TABLE CheckLists (
-  CheckListId SERIAL PRIMARY KEY,
+  CheckListId INT PRIMARY KEY,
   IsChecked BOOLEAN,
   Title TEXT,
   CardId INT,
@@ -54,7 +55,7 @@ CREATE TABLE CheckLists (
 );
 
 CREATE TABLE Comments (
-  CommentId SERIAL PRIMARY KEY,
+  CommentId INT PRIMARY KEY,
   CreatedAt TIME(6) DEFAULT CURRENT_TIME,
   UpdatedAt TIME(6),
   Comment TEXT,

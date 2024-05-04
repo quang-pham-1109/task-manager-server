@@ -20,6 +20,10 @@ export const AuthRegisterJson = {
                 type: 'string',
                 example: 'Doe',
               },
+              Username: {
+                type: 'string',
+                example: 'johndoe123',
+              },
               Email: {
                 type: 'string',
                 example: 'test@gmail.com',

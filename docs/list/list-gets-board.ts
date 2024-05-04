@@ -1,5 +1,5 @@
 import {
-  NotFoundJson,
+  BadRequestJson,
   ServerErrorJson,
   UnauthorizedJson,
 } from '../generic-responses';
@@ -18,7 +18,7 @@ export const ListGetsByBoardIdJson = {
       name: 'boardId',
       in: 'path',
       required: true,
-      description: 'List ID',
+      description: 'The ID of the board to get lists from',
       schema: {
         type: 'number',
         example: '1',
@@ -57,7 +57,18 @@ export const ListGetsByBoardIdJson = {
         },
       },
     },
-    '404': NotFoundJson,
+    '404': {
+      description: 'Board or Lists not found in the system',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'string',
+            example: 'Board (or Lists) not found',
+          },
+        },
+      },
+    },
+    '400': BadRequestJson,
     '401': UnauthorizedJson,
     '500': ServerErrorJson,
   },

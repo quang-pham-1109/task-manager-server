@@ -3,6 +3,7 @@ import { boardRouter } from './board-route';
 import { cardRouter } from './card-route';
 import { listRouter } from './list-route';
 import { commentRouter } from './comment-route';
+import { checkListRouter } from './checklist-route';
 
 import { Application } from 'express';
 
@@ -12,4 +13,5 @@ export const initRoutes = (app: Application) => {
   app.use('/list', listRouter);
   app.use('/card', cardRouter);
   app.use('/comment', commentRouter);
+  app.use('/checklist', checkListRouter);
 };
