@@ -1,0 +1,71 @@
+CREATE TABLE Users (
+  UserId SERIAL PRIMARY KEY,
+  FirstName TEXT,
+  LastName TEXT,
+  Email TEXT UNIQUE,
+  Password TEXT
+);
+
+CREATE TABLE Boards (
+  BoardId SERIAL PRIMARY KEY,
+  CreatedAt TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+  Title TEXT,
+  UpdatedAt TIMESTAMP(6)
+);
+
+CREATE TABLE BoardMembers (
+  BoardId INT,
+  MemberId INT,
+  PRIMARY KEY (BoardId, MemberId),
+  FOREIGN KEY (BoardId) REFERENCES Boards(BoardId) ON DELETE CASCADE,
+  FOREIGN KEY (MemberId) REFERENCES Users(UserId) ON DELETE CASCADE
+);
+
+CREATE TABLE Lists (
+  ListId SERIAL PRIMARY KEY,
+  CreatedAt TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+  UpdatedAt TIMESTAMP(6),
+  Title TEXT,
+  Order INT
+);
+
+CREATE TABLE BoardLists (
+  BoardId INT,
+  ListId INT,
+  PRIMARY KEY (BoardId, ListId),
+  FOREIGN KEY (BoardId) REFERENCES Boards(BoardId) ON DELETE NO ACTION,
+  FOREIGN KEY (ListId) REFERENCES Lists(ListId) ON DELETE CASCADE
+);
+
+CREATE TABLE Cards (
+  CardId SERIAL PRIMARY KEY,
+  Title TEXT,
+  DueDate DATE,
+  Description TEXT,
+  ReminderDate DATE
+);
+
+CREATE TABLE CheckLists (
+  CheckListId SERIAL PRIMARY KEY,
+  IsChecked BOOLEAN,
+  Title TEXT,
+  CardId INT,
+  FOREIGN KEY (CardId) REFERENCES Cards(CardId) ON DELETE CASCADE
+);
+
+CREATE TABLE Comments (
+  CommentId SERIAL PRIMARY KEY,
+  CreatedAt TIME(6) DEFAULT CURRENT_TIME,
+  UpdatedAt TIME(6),
+  Comment TEXT,
+  CardId INT,
+  FOREIGN KEY (CardId) REFERENCES Cards(CardId) ON DELETE CASCADE
+);
+
+CREATE TABLE ListCards (
+  ListId INT,
+  CardId INT,
+  PRIMARY KEY (ListId, CardId),
+  FOREIGN KEY (CardId) REFERENCES Cards(CardId) ON DELETE CASCADE,
+  FOREIGN KEY (ListId) REFERENCES Lists(ListId) ON DELETE CASCADE
+);
