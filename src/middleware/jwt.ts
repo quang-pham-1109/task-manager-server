@@ -27,7 +27,6 @@ export const verifyTokenFromHeader = (
   next: NextFunction,
 ) => {
   const authHeader = req.headers.authorization;
-
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res
       .status(StatusCodes.UNAUTHORIZED)
@@ -42,7 +41,7 @@ export const verifyTokenFromHeader = (
       .json({ message: 'Unauthorized' });
   }
 
-  const decodedToken: JWTToken = jwt.verify(token, secretKey!) as any;
+  const decodedToken: JWTToken = jwt.verify(token, 'your-secret') as any;
 
   if (decodedToken.iss !== 'task-manager' || !decodedToken.userId) {
     return res

@@ -5,6 +5,8 @@ import {
   getBoardsByUserId,
   getBoardById,
   findUserById,
+  updateBoard,
+  deleteBoard,
 } from '../services';
 import { getUserIdFromToken } from '../middleware';
 
@@ -65,7 +67,7 @@ export const getBoardsHandler = async (req: Request, res: Response) => {
 
 export const getBoardByIdHandler = async (req: Request, res: Response) => {
   try {
-    const boardId = parseInt(req.params.id);
+    const boardId = parseInt(req.params.boardId);
 
     if (isNaN(boardId)) {
       return res
@@ -81,6 +83,60 @@ export const getBoardByIdHandler = async (req: Request, res: Response) => {
     }
 
     return res.status(StatusCodes.OK).json(board);
+  } catch (error) {
+    console.log(error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+  }
+};
+
+export const updateBoardHandler = async (req: Request, res: Response) => {
+  try {
+    const boardId = parseInt(req.params.boardId);
+    const { Title } = req.body;
+
+    if (isNaN(boardId) || Title === null) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: 'Invalid input' });
+    }
+
+    const board = await getBoardById(boardId);
+    if (!board) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: 'Board not found' });
+    }
+
+    const updatedBoard = await updateBoard(boardId, Title);
+    if (updatedBoard) {
+      return res.status(StatusCodes.OK).json({ message: 'Board updated' });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+  }
+};
+
+export const deleteBoardHandler = async (req: Request, res: Response) => {
+  try {
+    const boardId = parseInt(req.params.boardId);
+    console.log(boardId);
+
+    if (isNaN(boardId)) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: 'Invalid input' });
+    }
+
+    const board = await getBoardById(boardId);
+    if (!board) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: 'Board not found' });
+    }
+
+    await deleteBoard(boardId);
+    return res.status(StatusCodes.OK).json({ message: 'Board deleted' });
   } catch (error) {
     console.log(error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);

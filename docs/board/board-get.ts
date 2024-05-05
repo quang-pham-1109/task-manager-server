@@ -14,7 +14,7 @@ export const BoardGetJson = {
   ],
   parameters: [
     {
-      name: 'id',
+      name: 'boardId',
       in: 'path',
       description: 'Board ID',
       required: true,

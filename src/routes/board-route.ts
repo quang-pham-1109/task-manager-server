@@ -5,6 +5,8 @@ import {
   createBoardHandler,
   getBoardsHandler,
   getBoardByIdHandler,
+  updateBoardHandler,
+  deleteBoardHandler,
 } from '../controllers';
 
 const boardRouter = Router();
@@ -18,6 +20,15 @@ boardRouter.post(
 
 boardRouter.get('/', verifyTokenFromHeader, getBoardsHandler);
 
-boardRouter.get('/:id', verifyTokenFromHeader, getBoardByIdHandler);
+boardRouter.get('/:boardId', verifyTokenFromHeader, getBoardByIdHandler);
+
+boardRouter.put(
+  '/:boardId',
+  validate(boardSchema),
+  verifyTokenFromHeader,
+  updateBoardHandler,
+);
+
+boardRouter.delete('/:boardId', verifyTokenFromHeader, deleteBoardHandler);
 
 export { boardRouter };

@@ -1,6 +1,13 @@
 import { AuthLoginJson } from './auth/auth-login';
 import { AuthRegisterJson } from './auth/auth-register';
-import { BoardCreateJson, BoardGetJson, BoardGetsJson } from './board';
+import {
+  BoardAddMemberJson,
+  BoardCreateJson,
+  BoardGetJson,
+  BoardGetsJson,
+  BoardUpdateJson,
+  BoardDeleteJson,
+} from './board';
 import { CardGetsListJson, CardCreateJson, CardGetJson } from './card';
 import {
   CheckListCreateJson,
@@ -46,8 +53,13 @@ export const apiDoc = {
       post: BoardCreateJson,
       get: BoardGetsJson,
     },
-    '/board/{id}': {
+    '/board/{boardId}': {
       get: BoardGetJson,
+      put: BoardUpdateJson,
+      delete: BoardDeleteJson,
+    },
+    '/board/{boardId}/member': {
+      post: BoardAddMemberJson,
     },
 
     // List

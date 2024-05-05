@@ -41,3 +41,24 @@ export const getBoardById = async (boardId: number) => {
   const board = await prisma.$queryRawUnsafe<Boards[]>(query);
   return board[0];
 };
+
+export const updateBoard = async (boardId: number, title: string) => {
+  const query = `
+    UPDATE "Boards"
+    SET "Title" = '${title}'
+    WHERE "BoardId" = ${boardId}
+    RETURNING *;
+  `;
+  const updatedBoard = await prisma.$queryRawUnsafe<Boards[]>(query);
+  return updatedBoard[0];
+};
+
+export const deleteBoard = async (boardId: number) => {
+  const query = `
+    DELETE FROM "Boards"
+    WHERE "BoardId" = ${boardId}
+    RETURNING *;
+  `;
+  const deletedBoard = await prisma.$queryRawUnsafe<Boards[]>(query);
+  return deletedBoard[0];
+};
