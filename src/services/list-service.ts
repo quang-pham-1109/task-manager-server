@@ -1,19 +1,16 @@
-import { PrismaClient, type Lists } from '@prisma/client';
+import { Cards, PrismaClient, type Lists } from '@prisma/client';
+import { deleteCardById } from './card-service';
 
-const prism = new PrismaClient();
+const prisma = new PrismaClient();
 
-export const createList = async (
-  Title: string,
-  Order: number,
-  BoardId: number,
-) => {
+export const createList = async (Title: string, BoardId: number) => {
   const insertList = `
-    INSERT INTO "Lists" ("Title", "Order") 
-    VALUES ('${Title}', ${Order})
+    INSERT INTO "Lists" ("Title") 
+    VALUES ('${Title}')
     RETURNING "ListId";
   `;
 
-  const lists = await prism.$queryRawUnsafe<Lists[]>(insertList);
+  const lists = await prisma.$queryRawUnsafe<Lists[]>(insertList);
 
   const newListId = lists[0].ListId;
   const insertBoardList = `
@@ -21,7 +18,7 @@ export const createList = async (
     VALUES (${BoardId}, ${newListId});
   `;
 
-  const newBoardList = await prism.$executeRawUnsafe(insertBoardList);
+  const newBoardList = await prisma.$executeRawUnsafe(insertBoardList);
   return newBoardList;
 };
 
@@ -37,7 +34,7 @@ export const getListsByBoardId = async (boardId: number) => {
     );
   `;
 
-  const lists = await prism.$queryRawUnsafe<Lists[]>(query);
+  const lists = await prisma.$queryRawUnsafe<Lists[]>(query);
   return lists;
 };
 
@@ -47,7 +44,40 @@ export const getListById = async (listId: number) => {
     WHERE "ListId" = ${listId};
   `;
 
-  const list = await prism.$queryRawUnsafe<Lists[]>(query);
+  const list = await prisma.$queryRawUnsafe<Lists[]>(query);
 
   return list[0];
+};
+
+export const updateList = async (listId: number, Title: string) => {
+  const query = `
+    UPDATE "Lists" 
+    SET "Title" = '${Title}'
+    WHERE "ListId" = ${listId};
+  `;
+
+  const updatedList = await prisma.$executeRawUnsafe(query);
+  return updatedList;
+};
+
+export const deleteListById = async (listId: number) => {
+  // Get all cards in the list
+  const queryCard = `
+    SELECT "CardId" FROM "ListCards"
+    WHERE "ListId" = ${listId};
+  `;
+  const cards = await prisma.$queryRawUnsafe<Cards[]>(queryCard);
+
+  // Delete all cards in the list
+  for (const card of cards) {
+    await deleteCardById(card.CardId);
+  }
+
+  // Delete list
+  const queryDeleteList = `
+    DELETE FROM "Lists"
+    WHERE "ListId" = ${listId};
+  `;
+  const deletedList = await prisma.$executeRawUnsafe(queryDeleteList);
+  return deletedList;
 };

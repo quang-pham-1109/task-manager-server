@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 
 import dotenv from 'dotenv';
 import { StatusCodes } from 'http-status-codes';
@@ -41,8 +41,7 @@ export const verifyTokenFromHeader = (
       .json({ message: 'Unauthorized' });
   }
 
-  const decodedToken: JWTToken = jwt.verify(token, 'your-secret') as any;
-
+  const decodedToken: JWTToken = jwt.verify(token, secretKey!) as any;
   if (decodedToken.iss !== 'task-manager' || !decodedToken.userId) {
     return res
       .status(StatusCodes.UNAUTHORIZED)
@@ -54,6 +53,7 @@ export const verifyTokenFromHeader = (
 
 export const getUserIdFromToken = (req: Request) => {
   const authHeader = req.headers.authorization;
+
   const token = authHeader!.split(' ')[1];
 
   const decodedToken = jwt.verify(token, secretKey!) as any;

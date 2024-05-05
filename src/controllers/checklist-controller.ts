@@ -2,9 +2,11 @@ import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import {
   createCheckList,
+  deleteCheckListById,
   getCardById,
   getCheckListByCardId,
   getCheckListById,
+  updateCheckListById,
   updateCheckListStatus,
 } from '../services';
 
@@ -78,6 +80,61 @@ export const updateCheckListStatusHandler = async (
     return res
       .status(StatusCodes.OK)
       .json({ message: 'Checklist status updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+  }
+};
+
+export const updateCheckListHandler = async (
+  req: Request,
+  res: Response,
+) => {
+  try {
+    const { checkListId } = req.params;
+    const { Title } = req.body;
+
+    if (!Title) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: 'Title is required' });
+    }
+
+    const checkList = await getCheckListById(Number(checkListId));
+    if (!checkList) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: 'Checklist not found' });
+    }
+
+    await updateCheckListById(Number(checkListId), Title);
+    return res
+      .status(StatusCodes.OK)
+      .json({ message: 'Checklist updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+  }
+};
+
+export const deleteCheckListHandler = async (
+  req: Request,
+  res: Response,
+) => {
+  try {
+    const { checkListId } = req.params;
+
+    const checkList = await getCheckListById(Number(checkListId));
+    if (!checkList) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: 'Checklist not found' });
+    }
+
+    await deleteCheckListById(Number(checkListId));
+    return res
+      .status(StatusCodes.OK)
+      .json({ message: 'Checklist deleted successfully' });
   } catch (error) {
     console.error(error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);

@@ -45,3 +45,26 @@ export const updateCheckListStatus = async (
   const updatedCheckList = await prisma.$executeRawUnsafe(update);
   return updatedCheckList;
 };
+
+export const updateCheckListById = async (
+  CheckListId: number,
+  Title: string,
+) => {
+  const update = `
+    UPDATE "CheckLists" SET "Title" = '${Title}'
+    WHERE "CheckListId" = ${CheckListId};
+  `;
+
+  const updatedCheckList = await prisma.$executeRawUnsafe(update);
+  return updatedCheckList;
+};
+
+export const deleteCheckListById = async (CheckListId: number) => {
+  const query = `
+    DELETE FROM "CheckLists"
+    WHERE "CheckListId" = ${CheckListId};
+  `;
+
+  const deletedCheckList = await prisma.$executeRawUnsafe(query);
+  return deletedCheckList;
+};

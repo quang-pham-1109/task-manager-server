@@ -1,12 +1,13 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import {
   createBoard,
   getBoardsByUserId,
   getBoardById,
   findUserById,
-  updateBoard,
-  deleteBoard,
+  updateBoardById,
+  deleteBoardById,
+  addMember,
 } from '../services';
 import { getUserIdFromToken } from '../middleware';
 
@@ -67,9 +68,9 @@ export const getBoardsHandler = async (req: Request, res: Response) => {
 
 export const getBoardByIdHandler = async (req: Request, res: Response) => {
   try {
-    const boardId = parseInt(req.params.boardId);
+    const boardId = Number(req.params.boardId);
 
-    if (isNaN(boardId)) {
+    if (Number.isNaN(boardId)) {
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: 'Invalid input' });
@@ -91,10 +92,12 @@ export const getBoardByIdHandler = async (req: Request, res: Response) => {
 
 export const updateBoardHandler = async (req: Request, res: Response) => {
   try {
-    const boardId = parseInt(req.params.boardId);
+    const boardId = Number(req.params.boardId);
+
     const { Title } = req.body;
 
-    if (isNaN(boardId) || Title === null) {
+    if (Number.isNaN(boardId) || Title === null) {
+      console.log('Invalid input');
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: 'Invalid input' });
@@ -107,7 +110,7 @@ export const updateBoardHandler = async (req: Request, res: Response) => {
         .json({ message: 'Board not found' });
     }
 
-    const updatedBoard = await updateBoard(boardId, Title);
+    const updatedBoard = await updateBoardById(boardId, Title);
     if (updatedBoard) {
       return res.status(StatusCodes.OK).json({ message: 'Board updated' });
     }
@@ -119,10 +122,9 @@ export const updateBoardHandler = async (req: Request, res: Response) => {
 
 export const deleteBoardHandler = async (req: Request, res: Response) => {
   try {
-    const boardId = parseInt(req.params.boardId);
-    console.log(boardId);
+    const boardId = Number(req.params.boardId);
 
-    if (isNaN(boardId)) {
+    if (Number.isNaN(boardId)) {
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: 'Invalid input' });
@@ -135,8 +137,61 @@ export const deleteBoardHandler = async (req: Request, res: Response) => {
         .json({ message: 'Board not found' });
     }
 
-    await deleteBoard(boardId);
+    await deleteBoardById(boardId);
     return res.status(StatusCodes.OK).json({ message: 'Board deleted' });
+  } catch (error) {
+    console.log(error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+  }
+};
+
+export const addMemberHandler = async (req: Request, res: Response) => {
+  try {
+    const boardId = Number(req.params.boardId);
+    const userId = getUserIdFromToken(req);
+    const { MemberId } = req.body;
+
+    // Check input
+    if (Number.isNaN(boardId) || MemberId === null) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: 'Invalid input' });
+    }
+
+    // Check if user is adding themselves
+    if (userId === MemberId) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: 'Cannot add yourself' });
+    }
+
+    // Check if board exists
+    const board = await getBoardById(boardId);
+    if (!board) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: 'Board not found' });
+    }
+
+    // Check if user exists
+    const user = await findUserById(MemberId);
+    if (!user) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: 'User not found' });
+    }
+
+    // Add member
+    const boardMembers = await addMember(boardId, MemberId);
+    if (!boardMembers) {
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Failed to add member' });
+    }
+
+    return res
+      .status(StatusCodes.OK)
+      .json({ message: 'Member added successfully' });
   } catch (error) {
     console.log(error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);

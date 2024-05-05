@@ -1,4 +1,5 @@
-import { type Boards, PrismaClient } from '@prisma/client';
+import { type Boards, PrismaClient, Lists } from '@prisma/client';
+import { deleteListById } from './list-service';
 
 const prisma = new PrismaClient();
 
@@ -42,7 +43,7 @@ export const getBoardById = async (boardId: number) => {
   return board[0];
 };
 
-export const updateBoard = async (boardId: number, title: string) => {
+export const updateBoardById = async (boardId: number, title: string) => {
   const query = `
     UPDATE "Boards"
     SET "Title" = '${title}'
@@ -53,12 +54,35 @@ export const updateBoard = async (boardId: number, title: string) => {
   return updatedBoard[0];
 };
 
-export const deleteBoard = async (boardId: number) => {
-  const query = `
+export const deleteBoardById = async (boardId: number) => {
+  // Get all lists in the board
+  const queryList = `
+    SELECT "ListId" FROM "BoardLists"
+    WHERE "BoardId" = ${boardId};
+  `;
+  const lists = await prisma.$queryRawUnsafe<Lists[]>(queryList);
+
+  // Delete all lists in the board
+  for (const list of lists) {
+    await deleteListById(list.ListId);
+  }
+
+  // Delete board
+  const queryBoard = `
     DELETE FROM "Boards"
     WHERE "BoardId" = ${boardId}
     RETURNING *;
   `;
-  const deletedBoard = await prisma.$queryRawUnsafe<Boards[]>(query);
+  const deletedBoard = await prisma.$queryRawUnsafe<Boards[]>(queryBoard);
   return deletedBoard[0];
+};
+
+export const addMember = async (boardId: number, memberId: number) => {
+  const query = `
+    INSERT INTO "BoardMembers" ("BoardId", "MemberId")
+    VALUES (${boardId}, ${memberId})
+    RETURNING *;
+  `;
+  const boardMembers = await prisma.$queryRawUnsafe<Boards[]>(query);
+  return boardMembers[0];
 };

@@ -5,6 +5,8 @@ import {
   createListHandler,
   getListsByBoardIdHandler,
   getListByIdHandler,
+  updateListHandler,
+  deleteListHandler,
 } from '../controllers';
 
 const listRouter = Router();
@@ -22,6 +24,10 @@ listRouter.get(
   getListsByBoardIdHandler,
 );
 
-listRouter.get('/:id', verifyTokenFromHeader, getListByIdHandler);
+listRouter.get('/:listId', verifyTokenFromHeader, getListByIdHandler);
+
+listRouter.put('/:listId', verifyTokenFromHeader, updateListHandler);
+
+listRouter.delete('/:listId', verifyTokenFromHeader, deleteListHandler);
 
 export { listRouter };

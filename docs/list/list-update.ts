@@ -1,12 +1,13 @@
 import {
-  BadRequestJson,
+  NotFoundJson,
   ServerErrorJson,
   UnauthorizedJson,
 } from '../generic-responses';
 
-export const BoardAddMemberJson = {
-  tags: ['Board'],
-  summary: 'Add member to board',
+export const ListUpdateJson = {
+  tags: ['List'],
+  summary: 'Update list',
+  description: 'Update list',
   security: [
     {
       bearerAuth: [],
@@ -14,12 +15,13 @@ export const BoardAddMemberJson = {
   ],
   parameters: [
     {
-      name: 'boardId',
+      name: 'listId',
       in: 'path',
-      description: 'Board ID',
       required: true,
+      description: 'List ID',
       schema: {
         type: 'number',
+        example: '1',
       },
     },
   ],
@@ -29,9 +31,9 @@ export const BoardAddMemberJson = {
         schema: {
           type: 'object',
           properties: {
-            MemberId: {
-              type: 'number',
-              example: 1,
+            Title: {
+              type: 'string',
+              example: 'My list',
             },
           },
         },
@@ -40,7 +42,7 @@ export const BoardAddMemberJson = {
   },
   responses: {
     '200': {
-      description: 'Member added successfully',
+      description: 'List updated successfully',
       content: {
         'application/json': {
           schema: {
@@ -48,31 +50,15 @@ export const BoardAddMemberJson = {
             properties: {
               message: {
                 type: 'string',
-                example: 'Member added successfully',
+                example: 'List updated successfully',
               },
             },
           },
         },
       },
     },
-    '404': {
-      description: 'Board not found',
-      content: {
-        'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              message: {
-                type: 'string',
-                example: 'Board not found',
-              },
-            },
-          },
-        },
-      },
-    },
-    '400': BadRequestJson,
     '401': UnauthorizedJson,
+    '404': NotFoundJson,
     '500': ServerErrorJson,
   },
 };

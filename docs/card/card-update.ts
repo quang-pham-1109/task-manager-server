@@ -1,12 +1,9 @@
-import {
-  BadRequestJson,
-  ServerErrorJson,
-  UnauthorizedJson,
-} from '../generic-responses';
+import { ServerErrorJson, UnauthorizedJson } from '../generic-responses';
 
-export const BoardAddMemberJson = {
-  tags: ['Board'],
-  summary: 'Add member to board',
+export const CardUpdateJson = {
+  tags: ['Card'],
+  summary: 'Update card',
+  description: 'Endpoint to update card',
   security: [
     {
       bearerAuth: [],
@@ -14,9 +11,9 @@ export const BoardAddMemberJson = {
   ],
   parameters: [
     {
-      name: 'boardId',
+      name: 'cardId',
       in: 'path',
-      description: 'Board ID',
+      description: 'Card id',
       required: true,
       schema: {
         type: 'number',
@@ -29,9 +26,21 @@ export const BoardAddMemberJson = {
         schema: {
           type: 'object',
           properties: {
-            MemberId: {
-              type: 'number',
-              example: 1,
+            Title: {
+              type: 'string',
+              example: 'My card',
+            },
+            Description: {
+              type: 'string',
+              example: 'My card description',
+            },
+            DueDate: {
+              type: 'date',
+              example: '2022-01-01',
+            },
+            ReminderDate: {
+              type: 'date',
+              example: '2022-01-01',
             },
           },
         },
@@ -40,7 +49,7 @@ export const BoardAddMemberJson = {
   },
   responses: {
     '200': {
-      description: 'Member added successfully',
+      description: 'Card updated successfully',
       content: {
         'application/json': {
           schema: {
@@ -48,7 +57,7 @@ export const BoardAddMemberJson = {
             properties: {
               message: {
                 type: 'string',
-                example: 'Member added successfully',
+                example: 'Card updated successfully',
               },
             },
           },
@@ -56,7 +65,7 @@ export const BoardAddMemberJson = {
       },
     },
     '404': {
-      description: 'Board not found',
+      description: 'Card not found',
       content: {
         'application/json': {
           schema: {
@@ -64,15 +73,14 @@ export const BoardAddMemberJson = {
             properties: {
               message: {
                 type: 'string',
-                example: 'Board not found',
+                example: 'Card not found',
               },
             },
           },
         },
       },
     },
-    '400': BadRequestJson,
-    '401': UnauthorizedJson,
     '500': ServerErrorJson,
+    '401': UnauthorizedJson,
   },
 };

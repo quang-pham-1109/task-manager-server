@@ -8,17 +8,32 @@ import {
   BoardUpdateJson,
   BoardDeleteJson,
 } from './board';
-import { CardGetsListJson, CardCreateJson, CardGetJson } from './card';
+import {
+  CardGetsListJson,
+  CardCreateJson,
+  CardGetJson,
+  CardUpdateJson,
+  CardDeleteJson,
+} from './card';
 import {
   CheckListCreateJson,
+  CheckListDeleteJson,
   CheckListGetsCard,
+  CheckListUpdateJson,
   CheckListUpdateStatusJson,
 } from './checklist';
-import { CommentCreateJson, CommentGetCardJson } from './comment';
+import {
+  CommentCreateJson,
+  CommentDeleteJson,
+  CommentGetCardJson,
+  CommentUpdateJson,
+} from './comment';
 import {
   ListCreateJson,
+  ListDeleteJson,
   ListGetJson,
   ListGetsByBoardIdJson,
+  ListUpdateJson,
 } from './list';
 
 export const apiDoc = {
@@ -69,8 +84,10 @@ export const apiDoc = {
     '/list/{boardId}/board': {
       get: ListGetsByBoardIdJson,
     },
-    '/list/{id}': {
+    '/list/{listId}': {
       get: ListGetJson,
+      put: ListUpdateJson,
+      delete: ListDeleteJson,
     },
 
     // Card
@@ -79,6 +96,8 @@ export const apiDoc = {
     },
     '/card/{cardId}': {
       get: CardGetJson,
+      put: CardUpdateJson,
+      delete: CardDeleteJson,
     },
     '/card/{listId}/list': {
       get: CardGetsListJson,
@@ -88,18 +107,27 @@ export const apiDoc = {
     '/checklist': {
       post: CheckListCreateJson,
     },
+    '/checklist/{checkListId}': {
+      put: CheckListUpdateJson,
+      delete: CheckListDeleteJson,
+    },
     '/checklist/{checkListId}/status': {
       put: CheckListUpdateStatusJson,
     },
     '/checklist/{cardId}/card': {
       get: CheckListGetsCard,
     },
+
     // Comment
     '/comment': {
       post: CommentCreateJson,
     },
     '/comment/{cardId}/card': {
       get: CommentGetCardJson,
+    },
+    '/comment/{commentId}': {
+      put: CommentUpdateJson,
+      delete: CommentDeleteJson,
     },
   },
 };

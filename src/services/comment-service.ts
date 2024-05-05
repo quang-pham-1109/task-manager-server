@@ -23,3 +23,35 @@ export const getCommentsByCardId = async (CardId: number) => {
   const comments = prisma.$queryRawUnsafe<Comments[]>(query);
   return comments;
 };
+
+export const getCommentById = async (CommentId: number) => {
+  const query = `
+    SELECT * FROM "Comments" WHERE "CommentId" = ${CommentId};
+  `;
+
+  const comment = await prisma.$queryRawUnsafe<Comments[]>(query);
+  return comment[0];
+};
+
+export const updateCommentById = async (
+  CommentId: number,
+  Comment: string,
+) => {
+  const update = `
+    UPDATE "Comments" SET "Comment" = '${Comment}'
+    WHERE "CommentId" = ${CommentId};
+  `;
+
+  const updatedComment = prisma.$executeRawUnsafe(update);
+  return updatedComment;
+};
+
+export const deleteCommentById = async (CommentId: number) => {
+  const deleteQuery = `
+    DELETE FROM "Comments"
+    WHERE "CommentId" = ${CommentId};
+  `;
+
+  const deletedComment = prisma.$executeRawUnsafe(deleteQuery);
+  return deletedComment;
+};

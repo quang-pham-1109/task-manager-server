@@ -5,3 +5,9 @@ export const boardSchema = z.object({
     Title: z.string().min(2),
   }),
 });
+
+export const addMemberSchema = z.object({
+  body: z.object({
+    MemberId: z.number(),
+  }),
+});

@@ -1,8 +1,12 @@
-import { ServerErrorJson, UnauthorizedJson } from '../generic-responses';
+import {
+  BadRequestJson,
+  ServerErrorJson,
+  UnauthorizedJson,
+} from '../generic-responses';
 
 export const BoardUpdateJson = {
   tags: ['Board'],
-  summary: 'Update board by ID',
+  summary: 'Change Board title by ID',
   security: [
     {
       bearerAuth: [],
@@ -10,7 +14,7 @@ export const BoardUpdateJson = {
   ],
   parameters: [
     {
-      name: 'id',
+      name: 'boardId',
       in: 'path',
       description: 'Board ID',
       required: true,
@@ -67,6 +71,7 @@ export const BoardUpdateJson = {
         },
       },
     },
+    '400': BadRequestJson,
     '401': UnauthorizedJson,
     '500': ServerErrorJson,
   },

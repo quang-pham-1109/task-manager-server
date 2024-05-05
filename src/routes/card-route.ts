@@ -5,6 +5,8 @@ import {
   createCardHandler,
   getCardsByListIdHandler,
   getCardByIdHandler,
+  deleteCardHandler,
+  updateCardByIdHandler,
 } from '../controllers';
 
 const cardRouter = Router();
@@ -23,5 +25,9 @@ cardRouter.get(
 );
 
 cardRouter.get('/:cardId', verifyTokenFromHeader, getCardByIdHandler);
+
+cardRouter.put('/:cardId', verifyTokenFromHeader, updateCardByIdHandler);
+
+cardRouter.delete('/:cardId', verifyTokenFromHeader, deleteCardHandler);
 
 export { cardRouter };

@@ -4,9 +4,10 @@ import {
   UnauthorizedJson,
 } from '../generic-responses';
 
-export const BoardAddMemberJson = {
-  tags: ['Board'],
-  summary: 'Add member to board',
+export const CheckListUpdateJson = {
+  tags: ['Checklist'],
+  summary: 'Update checklist',
+  description: 'Endpoint to update checklist',
   security: [
     {
       bearerAuth: [],
@@ -14,9 +15,9 @@ export const BoardAddMemberJson = {
   ],
   parameters: [
     {
-      name: 'boardId',
+      name: 'checkListId',
       in: 'path',
-      description: 'Board ID',
+      description: 'Checklist id',
       required: true,
       schema: {
         type: 'number',
@@ -29,9 +30,9 @@ export const BoardAddMemberJson = {
         schema: {
           type: 'object',
           properties: {
-            MemberId: {
-              type: 'number',
-              example: 1,
+            Title: {
+              type: 'string',
+              example: 'My checklist',
             },
           },
         },
@@ -40,7 +41,7 @@ export const BoardAddMemberJson = {
   },
   responses: {
     '200': {
-      description: 'Member added successfully',
+      description: 'Checklist updated successfully',
       content: {
         'application/json': {
           schema: {
@@ -48,7 +49,7 @@ export const BoardAddMemberJson = {
             properties: {
               message: {
                 type: 'string',
-                example: 'Member added successfully',
+                example: 'Checklist updated successfully',
               },
             },
           },
@@ -56,7 +57,7 @@ export const BoardAddMemberJson = {
       },
     },
     '404': {
-      description: 'Board not found',
+      description: 'Checklist not found',
       content: {
         'application/json': {
           schema: {
@@ -64,15 +65,15 @@ export const BoardAddMemberJson = {
             properties: {
               message: {
                 type: 'string',
-                example: 'Board not found',
+                example: 'Checklist not found',
               },
             },
           },
         },
       },
     },
-    '400': BadRequestJson,
     '401': UnauthorizedJson,
+    '400': BadRequestJson,
     '500': ServerErrorJson,
   },
 };

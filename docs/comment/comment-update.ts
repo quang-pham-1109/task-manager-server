@@ -1,12 +1,7 @@
-import {
-  BadRequestJson,
-  ServerErrorJson,
-  UnauthorizedJson,
-} from '../generic-responses';
-
-export const BoardAddMemberJson = {
-  tags: ['Board'],
-  summary: 'Add member to board',
+export const CommentUpdateJson = {
+  tags: ['Comment'],
+  summary: 'Update comment',
+  description: 'Endpoint to update comment',
   security: [
     {
       bearerAuth: [],
@@ -14,12 +9,13 @@ export const BoardAddMemberJson = {
   ],
   parameters: [
     {
-      name: 'boardId',
+      name: 'commentId',
       in: 'path',
-      description: 'Board ID',
+      description: 'Comment id',
       required: true,
       schema: {
         type: 'number',
+        example: 1,
       },
     },
   ],
@@ -29,9 +25,9 @@ export const BoardAddMemberJson = {
         schema: {
           type: 'object',
           properties: {
-            MemberId: {
-              type: 'number',
-              example: 1,
+            Comment: {
+              type: 'string',
+              example: 'My comment',
             },
           },
         },
@@ -40,7 +36,7 @@ export const BoardAddMemberJson = {
   },
   responses: {
     '200': {
-      description: 'Member added successfully',
+      description: 'Comment updated successfully',
       content: {
         'application/json': {
           schema: {
@@ -48,7 +44,7 @@ export const BoardAddMemberJson = {
             properties: {
               message: {
                 type: 'string',
-                example: 'Member added successfully',
+                example: 'Comment updated successfully',
               },
             },
           },
@@ -56,7 +52,7 @@ export const BoardAddMemberJson = {
       },
     },
     '404': {
-      description: 'Board not found',
+      description: 'Comment not found',
       content: {
         'application/json': {
           schema: {
@@ -64,15 +60,12 @@ export const BoardAddMemberJson = {
             properties: {
               message: {
                 type: 'string',
-                example: 'Board not found',
+                example: 'Comment not found',
               },
             },
           },
         },
       },
     },
-    '400': BadRequestJson,
-    '401': UnauthorizedJson,
-    '500': ServerErrorJson,
   },
 };
